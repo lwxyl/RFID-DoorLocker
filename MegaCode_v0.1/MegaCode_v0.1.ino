@@ -152,7 +152,7 @@ DHT dht(DHTPIN, DHT22);
 Servo myservo;
 JQ6500_Serial_HardwareSerial mp3(JQ6500Serial);
 uint8_t VOLUME = 30;
-bool TEST = true;
+bool TEST = !true;
 bool LED_RED_STATE = LEDSTATE_CHANGEABLE, LED_GREEN_STATE = LEDSTATE_CHANGEABLE, LED_BLUE_STATE = LEDSTATE_CHANGEABLE;
 bool LockStage = LOCKED, LockedByApp = true;
 bool writedtlog = true, writetemlog = true, writehumlog = true;
@@ -711,7 +711,7 @@ void displayDataAndTime() {
   sprintf( timebuf, "%02u:%02u", dt2.Hour(), dt2.Minute() );
   sprintf( timebufwithsecond, "%02u:%02u:%02u", dt2.Hour(), dt2.Minute(), dt2.Second() );
   uint8_t week = calculateWeek( dt2.Year(), dt2.Month(), dt2.Day() );
-  if (writedtlog == true) {
+  if (SD.begin(SDPIN) && writedtlog == true) {
     String dtlog = "DevicesID: " + eepromLoadString(0) + "  Data: " + String(datebufwithyear) + "  Week: " + String(week) + "  Time: " + String(timebufwithsecond);
     String sha1dtlog = "SHA1_dtlog: " + String(sha1(dtlog));
     Serial.println(dtlog);
@@ -745,7 +745,7 @@ void displayTemperature() {
     myGLCD.print("ERROR: READ TEMPERATURE!!!", 10, 30, 0);
   }
   else {
-    if (writetemlog == true) {
+    if (SD.begin(SDPIN) && writetemlog == true) {
       String temlog = "Temperature: " + String(temperature) + " *C";
       Serial.println(temlog);
       Log = SD.open("Log.txt", FILE_WRITE);
@@ -804,7 +804,7 @@ void displayHumidity() {
     myGLCD.print("ERROR: READ HUMIDITY!!!", 10, 30, 0);
   }
   else {
-    if (writehumlog == true) {
+    if (SD.begin(SDPIN) && writehumlog == true) {
       String humlog = "Humidity: " + String(humidity) + " %";
       Serial.println(humlog);
       Log = SD.open("Log.txt", FILE_WRITE);
